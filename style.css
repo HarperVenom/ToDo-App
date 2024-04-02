@@ -15,6 +15,10 @@ body {
     /* outline: 1px solid rgba(0, 0, 0, 0.521); */
 }
 
+svg {
+    pointer-events: none;
+}
+
 .black {
     background-color: #1E1E24;
 }
@@ -71,7 +75,6 @@ body {
     font-size: 50px;
     color: rgb(118, 118, 118);
     padding: 1rem;
-    border-radius: 0 0 20px 20px;
 }
 .task-input-container {
     display: flex;
@@ -80,7 +83,7 @@ body {
     align-items: center;
 }
 .task-input {
-    font-size: 1rem;
+    font-size: 1.5rem;
     width: 80%;
     margin: 1rem 0;
     padding: 0.3rem;
@@ -96,7 +99,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 0 0 20px 20px;
+    background-color: rgba(255, 255, 255, 0);
+    border-radius: 20px;
+}
+.task-add-button:hover {
+    background-color: rgba(0, 0, 0, 0.2);
 }
 .task-add-button svg {
     height: 80%;
@@ -204,6 +211,15 @@ body {
     border-radius: 0;
     transform: translate(0, 50px);
 }
+.completed-tasks-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+    padding-bottom: 1rem;
+}
 .completed-task {
     display: flex;
     align-items: center;
@@ -211,22 +227,27 @@ body {
     color: rgba(0, 0, 0, 0.4);
     background-color: #f5f1e380;
     margin-top: 1rem;
-    font-size: 18px;
+    font-size: 24px;
     padding: 1rem;
     border: 2px solid rgba(0, 0, 0, 0.3);
+    
+    width: 85%;
 }
 .completed-task p {
     margin: 0 1rem;
     cursor: default;
+    word-wrap: break-word;
+    overflow: auto;
+    min-width: 50%;
 }
 .completed-task .checkmark {
-    width: 50px;
+    min-width: 40px;
     stroke: rgba(0, 0, 0, 0.4);
 }
-.completed-task .remove {
+.completed-task .remove{
     cursor: pointer;
     stroke: rgba(0, 0, 0, 0);
-    width: 30px;
+    min-width: 50px;
     transition: stroke 0.3s ease-out, background-color 0.3s ease-out;
 }
 .completed-task:hover .remove {
