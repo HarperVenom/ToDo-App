@@ -9,6 +9,7 @@ const addButton = document.querySelector('.task-add-button');
 addButton.addEventListener('click', () => {
     if (input.value === '') return;
     createTask(input.value);
+    input.value = '';
 })
 
 function createTask(task) {
