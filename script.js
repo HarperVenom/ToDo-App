@@ -4,13 +4,62 @@ const completeListOpenButton = document.querySelector('.open-completed-button');
 
 const input = document.querySelector('.task-input');
 const addButton = document.querySelector('.task-add-button');
+const clearButton = document.querySelector('.clear-button');
+
+let tasksArray = JSON.parse(localStorage.getItem('tasksList')) || [];
+updateLists();
+
+function getNewId() {
+    let newId = 0;
+    while (tasksArray.findIndex(task => task.id === newId) !== -1) {
+        newId++;
+    }
+    return newId
+}
 
 
 addButton.addEventListener('click', () => {
     if (input.value === '') return;
-    createTask(input.value);
+    saveTask(input.value, false);
     input.value = '';
 })
+
+function saveTask(description, isCompleted) {
+    tasksArray.push({
+        description: description,
+        completed: isCompleted,
+        id: getNewId()
+    });
+    updateLists();
+}
+
+function completeTask(id) {
+    const index = tasksArray.findIndex(task => task.id === id);
+    tasksArray[index].completed = true;
+    updateLists();
+}
+
+function removeTask(id) {
+    tasksArray = tasksArray.filter(element => element.id !== id)
+    updateLists();
+}
+
+function updateLists() {
+    const list = tasksArray;
+    console.log(list);
+    tasksContainer.innerHTML = '';
+    completeTasksContainer.innerHTML = '';
+    tasksArray.forEach((task) => {
+        if (!task.completed) {
+            createTask(task);
+        } else {
+            createCompletedTask(task);
+        }
+    });
+
+    localStorage.clear();
+    localStorage.setItem('tasksList', JSON.stringify(tasksArray));
+}
 
 function createTask(task) {
     const container = document.createElement('div');
@@ -23,7 +72,7 @@ function createTask(task) {
     checkBox.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
         </svg>`;
-    text.innerHTML = task;
+    text.innerHTML = task.description;
     removeButton.classList.add('task-remove-button', 'red');
     removeButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -33,26 +82,18 @@ function createTask(task) {
         checkBox.classList.remove('nocheck');
         checkBox.classList.add('check');
 
-        setTimeout( () => {
-            moveToDoneList(task)
-            tasksContainer.removeChild(container);
-        } ,500);
+        completeTask(task.id);
     });
 
     removeButton.addEventListener('click', () => {
-        tasksContainer.removeChild(container);
+        removeTask(task.id);
     });
 
     container.append(checkBox, text, removeButton);
     tasksContainer.appendChild(container);
 }
 
-// document.body.addEventListener('click', (e) => {
-//     console.log(e.target);
-//     //completeTasksContainer.removeChild(container);
-// });
-
-function moveToDoneList(task) {
+function createCompletedTask(task) {
     const container = document.createElement('div');
     const removeButton = document.createElement('div');
     const text = document.createElement('p');
@@ -63,14 +104,14 @@ function moveToDoneList(task) {
     removeButton.innerHTML = `<svg class="remove" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
         </svg>`;
-    text.innerHTML = task;
+    text.innerHTML = task.description;
     checkMark.innerHTML = `<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
     <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
     </svg>`;
     checkMark.classList.add('checkmark');
 
     removeButton.addEventListener('click', () => {
-        completeTasksContainer.removeChild(container);
+        removeTask(task.id);
     });
     container.append(removeButton, text, checkMark);
 
@@ -80,3 +121,8 @@ function moveToDoneList(task) {
 completeListOpenButton.addEventListener('click', () => {
     document.querySelector('.app-completed').classList.toggle('opened');
 })
+
+clearButton.addEventListener('click', () => {
+    tasksArray = [];
+    updateLists();
+});
