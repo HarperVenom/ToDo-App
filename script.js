@@ -45,8 +45,6 @@ function removeTask(id) {
 }
 
 function updateLists() {
-    const list = tasksArray;
-    console.log(list);
     tasksContainer.innerHTML = '';
     completeTasksContainer.innerHTML = '';
     tasksArray.forEach((task) => {
